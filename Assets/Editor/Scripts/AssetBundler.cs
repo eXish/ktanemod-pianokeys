@@ -59,13 +59,13 @@ public class AssetBundler
     private List<string> scriptPathsToRestore = new List<string>();
     #endregion
 
-    [MenuItem("Keep Talking ModKit/Build AssetBundle")]
+    [MenuItem("Keep Talking ModKit/Build AssetBundle", priority = 10)]
     public static void BuildAllAssetBundles_WithEditorUtility()
     {
         BuildModBundle(false);
     }
 
-    [MenuItem("Keep Talking ModKit/Build AssetBundle (with MSBuild)")]
+    [MenuItem("Keep Talking ModKit/Build AssetBundle (with MSBuild)", priority = 11)]
     public static void BuildAllAssetBundles_MSBuild()
     {
         BuildModBundle(true);
@@ -92,6 +92,7 @@ public class AssetBundler
 
         try
         {
+            bundler.WarnIfExampleAssetsAreIncluded();
             bundler.WarnIfAssetsAreNotTagged();
             bundler.CheckForAssets();
 
@@ -174,7 +175,7 @@ public class AssetBundler
         }
 
         //modify the csproj (if needed)
-        var csproj = File.ReadAllText("PianoKeys.CSharp.csproj");
+        var csproj = File.ReadAllText("ktanemods.CSharp.csproj");
         csproj = csproj.Replace("<AssemblyName>Assembly-CSharp</AssemblyName>", "<AssemblyName>"+ assemblyName + "</AssemblyName>");
         File.WriteAllText("modkithelper.CSharp.csproj", csproj);
 
@@ -374,6 +375,26 @@ public class AssetBundler
     }
 
     /// <summary>
+    /// All assets tagged with "mod.bundle" will be included in the build, including the Example assets. Print out a 
+    /// warning to notify mod authors that they may wish to delete the examples.
+    /// </summary>
+    protected void WarnIfExampleAssetsAreIncluded()
+    {
+        string examplesFolder = "Assets/Examples";
+
+        if (Directory.Exists(examplesFolder))
+        {
+            int numAssetsInBundle = AssetDatabase.FindAssets("b:" + BUNDLE_FILENAME).Length;
+            int numExampleAssetsInBundle = AssetDatabase.FindAssets("b:" + BUNDLE_FILENAME, new string[] { examplesFolder }).Length;
+
+            if ((numExampleAssetsInBundle > 0) && (numAssetsInBundle > numExampleAssetsInBundle))
+            {
+                Debug.LogWarningFormat("AssetBundle includes {0} assets under Examples/ tagged with \"mod.bundle\". These will be included in you bundle unless you untag or delete them.", numExampleAssetsInBundle);
+            }
+        }
+    }
+
+    /// <summary>
     /// Print a warning for all non-Example assets that are not currently tagged to be in this AssetBundle.
     /// </summary>
     protected void WarnIfAssetsAreNotTagged()
@@ -401,7 +422,7 @@ public class AssetBundler
     /// </summary>
     protected void CheckForAssets()
     {
-        string[] assetsInBundle = AssetDatabase.FindAssets(string.Format("b:", BUNDLE_FILENAME));
+        string[] assetsInBundle = AssetDatabase.FindAssets(string.Format("t:prefab,t:audioclip,b:", BUNDLE_FILENAME));
         if (assetsInBundle.Length == 0)
         {
             throw new Exception(string.Format("No assets have been tagged for inclusion in the {0} AssetBundle.", BUNDLE_FILENAME));

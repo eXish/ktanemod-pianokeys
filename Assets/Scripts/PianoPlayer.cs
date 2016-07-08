@@ -18,11 +18,7 @@ public enum Semitone
 
 public class PianoPlayer : MonoBehaviour
 {
-    //TODO - Put this back when/if KMAudio allows multiple-instance audio playback
-    //public KMAudio KMAudio;
-
-    //TODO - Remove this when/if KMAudio allows multiple-instance audio playback
-    public AudioSource AudioSource;
+    public KMAudio KMAudio;
 
     public Semitone InitialSemitone;
     public int InitialOctave;
@@ -41,11 +37,7 @@ public class PianoPlayer : MonoBehaviour
             return;
         }
 
-        //This is the way we're supposed to play sounds using KTANEModKit - it doesn't do multiple-instance audio playback yet
-        //KMAudio.PlaySoundAtTransform(Sounds[soundIndex].name, transform);
-
-        //TODO - Remove usage of this audio source when/if KMAudio allows multiple-instance audio playback
-        AudioSource.PlayOneShot(Sounds[soundIndex]);
+        KMAudio.PlaySoundAtTransform(Sounds[soundIndex].name, transform);
     }
 
     private int GetSoundIndex(Semitone semitone, int octave)
