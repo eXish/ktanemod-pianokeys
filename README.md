@@ -24,4 +24,4 @@ If you didn't purchase 'Keep Talking and Nobody Explodes' through Steam, but you
 
 Goto https://github.com/ashbash1987/ktanemod-pianokeys/releases and download the latest release for the module.
 
-Inside the *.zip file will be a folder called PianoKeys; drop that folder into the `&lt;path&gt;/&lt;to&gt;/Keep Talking and Nobody Explodes/mods` folder. (If the folder doesn't exist, create one for it).
+Inside the *.zip file will be a folder called PianoKeys; drop that folder into the `<path>/<to>/Keep Talking and Nobody Explodes/mods` folder. (If the folder doesn't exist, create one for it).
