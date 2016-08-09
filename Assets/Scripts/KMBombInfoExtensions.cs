@@ -92,11 +92,6 @@ public static class KMBombInfoExtensions
     {
         return GetJSONEntries<PortsJSON>(bombInfo, KMBombInfo.QUERYKEY_GET_PORTS, null);
     }
-
-    private static IEnumerable<SerialNumberJSON> GetSerialNumberEntries(KMBombInfo bombInfo)
-    {
-        return GetJSONEntries<SerialNumberJSON>(bombInfo, KMBombInfo.QUERYKEY_GET_SERIAL_NUMBER, null);
-    }
     #endregion
 
     #region Public Extensions
@@ -192,7 +187,12 @@ public static class KMBombInfoExtensions
 
     public static string GetSerialNumber(this KMBombInfo bombInfo)
     {
-        return GetSerialNumberEntries(bombInfo).First().serial;
+        foreach(string entry in bombInfo.QueryWidgets(KMBombInfo.QUERYKEY_GET_SERIAL_NUMBER, null))
+        {
+            UnityEngine.Debug.LogError(entry);
+        }
+
+        return bombInfo.GetSerialNumber();
     }
 
     public static IEnumerable<char> GetSerialNumberLetters(this KMBombInfo bombInfo)
