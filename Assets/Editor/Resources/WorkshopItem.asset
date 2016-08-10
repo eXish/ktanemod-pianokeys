@@ -13,13 +13,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WorkshopPublishedFileID: 720356976
   Title: Piano Keys Module
-  Description: "[h1]About[/h1]\r\nPiano Keys is an experimental module leveraging
-    the newly-exposed [b]KTANEModKit[/b] for 'Keep Talking and Nobody Explodes'. It
-    employs the use of a standard 12-tone piano keyboard and identification of symbols
-    from common western music notation as its main gimmick.\r\n\r\n[h1]Manual Page[/h1]\r\n[url=https://ashbash1987.github.io/ktanemod-pianokeys/Manual/]Click
-    here to view the manual page for this module.[/url]\r\n\r\n[h1]Mission Makers[/h1]\r\nFor
-    those making custom missions and wanting to reference this module, the type name
-    is [b][i]PianoKeys[/i][/b]."
+  Description: "[b][i]What do you get when you drop a piano down a mine shaft? A flat
+    minor.[/i][/b]\n\n[h1]About[/h1]\r\nThie module employs the use of a standard
+    12-tone piano keyboard and identification of symbols from common western music
+    notation as its main gimmick.\r\n\r\n[h1]Manual Page[/h1]\r\nThe manual PDF is
+    included in the download. However, you can also \n[url=https://ashbash1987.github.io/ktanemod-pianokeys/Manual/]click
+    here[/url]\r to view it online.\n\r\n[h1]Mission Makers[/h1]\r\nFor those making
+    custom missions and wanting to reference this module, the type name is [b][i]PianoKeys[/i][/b]."
   PreviewImage: {fileID: 2800000, guid: cc8ba585a4dc2d640a9f7075d863bf82, type: 3}
   Tags:
   - Module
