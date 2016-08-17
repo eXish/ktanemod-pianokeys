@@ -1,6 +1,6 @@
 # Piano Keys - a KTANEModKit module
 
-![Piano Keys Module](https://ashbash1987.github.io/ktanemod-pianokeys/Manual/img/Component.png "Piano Keys Module")
+![Piano Keys Module](https://ashbash1987.github.io/ktanemod-pianokeys/Manual/img/Component.svg "Piano Keys Module")
 
 Piano Keys is a module leveraging the newly-exposed KTANEModKit for _Keep Talking and Nobody Explodes_. It employs the use of a standard 12-tone piano keyboard and identification of symbols from common western music notation as its main gimmick.
 
