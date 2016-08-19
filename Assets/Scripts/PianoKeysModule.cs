@@ -1,194 +1,91 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 
 public class PianoKeysModule : MonoBehaviour
 {
     #region Constants
     private const int DefaultOctave = 3;
+    private static readonly Color NormalColour = new Color(1.0f, 1.0f, 1.0f);
+    private static readonly Color CruelColour = new Color(1.0f, 0.1f, 0.1f);
     #endregion
 
     #region Public Fields
     public KMBombModule KMBombModule;
     public KMBombInfo KMBombInfo;
     public KMSelectable KMSelectable;
+    public KMModSettings KMModSettings;
+    public MeshRenderer ComponentMesh;
     public PianoPlayer PianoPlayer;
     public PianoIndicator PianoIndicator;
     #endregion
 
-    #region Private Fields
-    private static readonly Melody[] Melodies =
+    #region Private Properties
+    private IEnumerable<Note> DecisionNotes
     {
-        new Melody() {
-            Name = "Final Fantasy Victory Fanfare",
-            RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.Flat) && (bombInfo.GetSerialNumberNumbers().Last() % 2) == 0,
-            Notes = new Note[] { new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.FSharp, 3),
-                                 new Note(Semitone.GSharp, 3),
-                                 new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.GSharp, 3),
-                                 new Note(Semitone.ASharp, 3)
+        get
+        {
+            if (_correctDecision != null)
+            {
+                return _correctDecision.GetNotes(KMBombInfo);
             }
-        },
 
-        new Melody() {
-            Name = "Guile's Theme",
-            RuleHandler = (indicator, bombInfo) => (indicator.HasSymbol(MusicSymbol.CommonTime) || indicator.HasSymbol(MusicSymbol.Sharp)) && bombInfo.GetBatteryHolderCount() >= 2,
-            Notes = new Note[] { new Note(Semitone.DSharp, 3),
-                                 new Note(Semitone.DSharp, 3),
-                                 new Note(Semitone.D, 3),
-                                 new Note(Semitone.D, 3),
-                                 new Note(Semitone.DSharp, 3),
-                                 new Note(Semitone.DSharp, 3),
-                                 new Note(Semitone.D, 3),
-                                 new Note(Semitone.DSharp, 3),
-                                 new Note(Semitone.DSharp, 3),
-                                 new Note(Semitone.D, 3),
-                                 new Note(Semitone.D, 3),
-                                 new Note(Semitone.DSharp, 3)
-            }
-        },
+            return null;
+        }
+    }
+    #endregion
 
-        new Melody() {
-            Name = "James Bond Theme",
-            RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.Natural) && indicator.HasSymbol(MusicSymbol.Fermata),
-            Notes = new Note[] { new Note(Semitone.E, 3),
-                                 new Note(Semitone.FSharp, 3),
-                                 new Note(Semitone.FSharp, 3),
-                                 new Note(Semitone.FSharp, 3),
-                                 new Note(Semitone.FSharp, 3),
-                                 new Note(Semitone.E, 3),
-                                 new Note(Semitone.E, 3),
-                                 new Note(Semitone.E, 3)
-            }
-        },
-
-        new Melody() {
-            Name = "Jurassic Park Theme",
-            RuleHandler = (indicator, bombInfo) => (indicator.HasSymbol(MusicSymbol.CutCommonTime) || indicator.HasSymbol(MusicSymbol.Turn)) && bombInfo.IsPortPresent(KMBombInfoExtensions.KnownPortType.StereoRCA),
-            Notes = new Note[] { new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.A, 3),
-                                 new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.F, 3),
-                                 new Note(Semitone.DSharp, 3),
-                                 new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.A, 3),
-                                 new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.F, 3),
-                                 new Note(Semitone.DSharp, 3)
-            }
-        },
-
-        new Melody() {
-            Name = "Mario Bros. Overworld Theme",
-            RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.AltoClef) && bombInfo.IsIndicatorOn(KMBombInfoExtensions.KnownIndicatorLabel.SND),
-            Notes = new Note[] { new Note(Semitone.E, 3),
-                                 new Note(Semitone.E, 3),
-                                 new Note(Semitone.E, 3),
-                                 new Note(Semitone.C, 3),
-                                 new Note(Semitone.E, 3),
-                                 new Note(Semitone.G, 3),
-                                 new Note(Semitone.G, 2)
-            }
-        },
-
-        new Melody() {
-            Name = "The Pink Panther Theme",
-            RuleHandler = (indicator, bombInfo) => (indicator.HasSymbol(MusicSymbol.Mordent) || indicator.HasSymbol(MusicSymbol.Fermata) || indicator.HasSymbol(MusicSymbol.CommonTime)) && bombInfo.GetBatteryCount() >= 3,
-            Notes = new Note[] { new Note(Semitone.CSharp, 3),
-                                 new Note(Semitone.D, 3),
-                                 new Note(Semitone.E, 3),
-                                 new Note(Semitone.F, 3),
-                                 new Note(Semitone.CSharp, 3),
-                                 new Note(Semitone.D, 3),
-                                 new Note(Semitone.E, 3),
-                                 new Note(Semitone.F, 3),
-                                 new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.A, 3)
-            }
-        },
-
-        new Melody() {
-            Name = "Superman Theme",
-            RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.Flat) && indicator.HasSymbol(MusicSymbol.Sharp),
-            Notes = new Note[] { new Note(Semitone.G, 3),
-                                 new Note(Semitone.G, 3),
-                                 new Note(Semitone.C, 3),
-                                 new Note(Semitone.G, 3),
-                                 new Note(Semitone.G, 3),
-                                 new Note(Semitone.C, 4),
-                                 new Note(Semitone.G, 3),
-                                 new Note(Semitone.C, 3)
-            }
-        },
-
-        new Melody() {
-            Name = "Tetris Mode-A Theme",
-            RuleHandler = (indicator, bombInfo) => (indicator.HasSymbol(MusicSymbol.CutCommonTime) || indicator.HasSymbol(MusicSymbol.Mordent)) && bombInfo.GetSerialNumberNumbers().Any((x) => x == 3 || x == 7 || x == 8),
-            Notes = new Note[] { new Note(Semitone.A, 3),
-                                 new Note(Semitone.E, 3),
-                                 new Note(Semitone.F, 3),
-                                 new Note(Semitone.G, 3),
-                                 new Note(Semitone.F, 3),
-                                 new Note(Semitone.E, 3),
-                                 new Note(Semitone.D, 3),
-                                 new Note(Semitone.D, 3),
-                                 new Note(Semitone.F, 3),
-                                 new Note(Semitone.A, 3)
-            }
-        },
-
-        new Melody() {
-            Name = "The Empire Strikes Back Theme",
-            RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.Natural) || indicator.HasSymbol(MusicSymbol.Turn) || indicator.HasSymbol(MusicSymbol.AltoClef),
-            Notes = new Note[] { new Note(Semitone.G, 3),
-                                 new Note(Semitone.G, 3),
-                                 new Note(Semitone.G, 3),
-                                 new Note(Semitone.DSharp, 3),
-                                 new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.G, 3),
-                                 new Note(Semitone.DSharp, 3),
-                                 new Note(Semitone.ASharp, 3),
-                                 new Note(Semitone.G, 3)
-            }
-        },
-
-        new Melody() {
-            Name = "Zelda's Lullaby Theme",
-            RuleHandler = (indicator, bombInfo) => true,
-            Notes = new Note[] { new Note(Semitone.B, 3),
-                                 new Note(Semitone.D, 4),
-                                 new Note(Semitone.A, 3),
-                                 new Note(Semitone.G, 3),
-                                 new Note(Semitone.A, 3),
-                                 new Note(Semitone.B, 3),
-                                 new Note(Semitone.D, 4),
-                                 new Note(Semitone.A, 3)
-            }
-        },
-    };
-    private Melody _correctMelody = null;
+    #region Private Fields
+    private Decision _correctDecision = null;
     private int _currentNoteIndex = 0;
+    private bool _isCruel = false;
     #endregion
 
     #region Unity Lifetime
     private void Start()
     {
-        for(int childIndex = 0; childIndex < KMSelectable.Children.Length; ++childIndex)
+        for (int childIndex = 0; childIndex < KMSelectable.Children.Length; ++childIndex)
         {
             KMSelectable childSelectable = KMSelectable.Children[childIndex];
             SetupSelectableNote(childSelectable, (Semitone)childIndex);
         }
+
+        _isCruel = GenerateCruelness();
+
+        KMBombModule.ModuleDisplayName = _isCruel ? "Cruel Piano Keys" : "Piano Keys";
+        KMBombModule.ModuleType = _isCruel ? "CruelPianoKeys" : "PianoKeys";
+
+        SetupMaterial();
+        PianoIndicator.PickSymbols(_isCruel);
     }
 
     private void Update()
     {
-        if (_correctMelody == null)
+        if (_correctDecision == null)
         {
-            _correctMelody = SelectMelody();
+            _correctDecision = SelectDecision();
+        }
+    }
+    #endregion
+
+    #region Cruel Decider
+    private bool GenerateCruelness()
+    {
+        try
+        {
+            PianoKeysModSettings modSettings = JsonConvert.DeserializeObject<PianoKeysModSettings>(KMModSettings.Settings);
+            if (modSettings != null)
+            {
+                return UnityEngine.Random.Range(0.0001f, 1.0f) <= modSettings.CruelProbability;
+            }
+
+            return false;
+        }
+        catch (Exception)
+        {
+            return false;
         }
     }
     #endregion
@@ -204,22 +101,32 @@ public class PianoKeysModule : MonoBehaviour
     }
     #endregion
 
-    #region Melody Selection
-    private Melody SelectMelody()
+    #region Material Setup
+    private void SetupMaterial()
     {
-        foreach (Melody melody in Melodies)
-        {
-            if (melody.RuleHandler(PianoIndicator, KMBombInfo))
-            {
-                return melody;
-            }
-        }
-
-        return null;
+        Material newMaterial = new Material(ComponentMesh.material);
+        newMaterial.color = _isCruel ? CruelColour : NormalColour;
+        ComponentMesh.material = newMaterial;
     }
     #endregion
 
-    #region Melody Validation
+    #region Decision Selection
+    private Decision SelectDecision()
+    {
+        if (_isCruel)
+        {
+            Decision decision = DecisionDatabase.CruelDecisions.FirstOrDefault((x) => x.IsValidDecision(PianoIndicator, KMBombInfo));
+            if (decision != null)
+            {
+                return decision;
+            }
+        }
+
+        return DecisionDatabase.NormalDecisions.FirstOrDefault((x) => x.IsValidDecision(PianoIndicator, KMBombInfo));
+    }
+    #endregion
+
+    #region Decision Validation
     private void ProcessSemitoneHit(Semitone semitone)
     {
         PlayNote(semitone);
@@ -268,7 +175,7 @@ public class PianoKeysModule : MonoBehaviour
     {
         get
         {
-            return _currentNoteIndex >= _correctMelody.Notes.Length;
+            return _currentNoteIndex >= DecisionNotes.Count();
         }
     }
 
@@ -276,9 +183,11 @@ public class PianoKeysModule : MonoBehaviour
     {
         get
         {
-            if (_correctMelody != null && _currentNoteIndex >= 0 && _currentNoteIndex < _correctMelody.Notes.Length)
+            Note[] notes = DecisionNotes.ToArray();
+
+            if (_correctDecision != null && _currentNoteIndex >= 0 && _currentNoteIndex < notes.Length)
             {
-                return _correctMelody.Notes[_currentNoteIndex].Semitone;
+                return notes[_currentNoteIndex].Semitone;
             }
 
             throw new Exception();
@@ -289,9 +198,11 @@ public class PianoKeysModule : MonoBehaviour
     {
         get
         {
-            if (_correctMelody != null && _currentNoteIndex >= 0 && _currentNoteIndex < _correctMelody.Notes.Length)
+            Note[] notes = DecisionNotes.ToArray();
+
+            if (_correctDecision != null && _currentNoteIndex >= 0 && _currentNoteIndex < notes.Length)
             {
-                return _correctMelody.Notes[_currentNoteIndex].Octave;
+                return notes[_currentNoteIndex].Octave;
             }
 
             return DefaultOctave;

@@ -38,19 +38,44 @@ public enum MusicSymbol
     Fermata,
 
     [SymbolCharacter('B')]
-    AltoClef
+    AltoClef,
+
+    [SymbolCharacter('')]
+    CrotchetRest,
+
+    [SymbolCharacter('')]
+    DownBow,
+
+    [SymbolCharacter('')]
+    Breeve,
+
+    [SymbolCharacter('')]
+    SemiquaverRest,
+
+    [SymbolCharacter('')]
+    DoubleSharp
 }
 
 public class PianoIndicator : MonoBehaviour
 {
     public TextMesh IndicatorText;
 
-    private const int SymbolCount = 3;
+    private const int NormalSymbolCount = 3;
+    private const int CruelSymbolCount = 4;
 
-    private void Start()
+    private static readonly MusicSymbol[] NormalSymbolOptions =
     {
-        PickSymbols();
-    }
+        MusicSymbol.Natural,
+        MusicSymbol.Flat,
+        MusicSymbol.Sharp,
+        MusicSymbol.Mordent,
+        MusicSymbol.Turn,
+        MusicSymbol.CommonTime,
+        MusicSymbol.CutCommonTime,
+        MusicSymbol.Fermata,
+        MusicSymbol.AltoClef
+    };
+    private static readonly MusicSymbol[] CruelSymbolOptions = (MusicSymbol[])System.Enum.GetValues(typeof(MusicSymbol));
 
     public bool HasSymbol(MusicSymbol symbol)
     {
@@ -58,13 +83,14 @@ public class PianoIndicator : MonoBehaviour
         return IndicatorText.text.IndexOf(character) >= 0;
     }
 
-    private void PickSymbols()
+    public void PickSymbols(bool isCruel)
     {
-        List<MusicSymbol> symbols = new List<MusicSymbol>((MusicSymbol[])System.Enum.GetValues(typeof(MusicSymbol)));
+        List<MusicSymbol> symbols = new List<MusicSymbol>(isCruel ? CruelSymbolOptions : NormalSymbolOptions);
+        int symbolCount = isCruel ? CruelSymbolCount : NormalSymbolCount;
 
         IndicatorText.text = "";
 
-        for (int symbolIndex = 0; symbolIndex < SymbolCount; ++symbolIndex)
+        for (int symbolIndex = 0; symbolIndex < symbolCount; ++symbolIndex)
         {
             int listIndex = Random.Range(0, symbols.Count);
             MusicSymbol symbol = symbols[listIndex];
