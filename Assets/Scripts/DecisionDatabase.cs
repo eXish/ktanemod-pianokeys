@@ -82,7 +82,7 @@ public static class DecisionDatabase
         {
             RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.Breeve) && indicator.HasSymbol(MusicSymbol.Turn) && bombInfo.GetIndicators().Count() >= 2,
             MelodyHandler = (bombInfo) => MelodyDatabase.SerialismMelodies[bombInfo.GetSerialNumberNumbers().First()],
-            TransformationHandler = (sequence, bombInfo) => sequence.Inversion().Retrograde().Transpose(2)
+            TransformationHandler = (sequence, bombInfo) => sequence.Inversion().Retrograde()
         },
         new Decision()
         {
@@ -94,13 +94,13 @@ public static class DecisionDatabase
         {
             RuleHandler = (indicator, bombInfo) => (indicator.HasSymbol(MusicSymbol.Fermata) || indicator.HasSymbol(MusicSymbol.DownBow)) && bombInfo.GetPorts().GroupBy((x) => x).Any((y) => y.Count() >= 2),
             MelodyHandler = (bombInfo) => MelodyDatabase.SerialismMelodies[bombInfo.GetSolvedModuleNames().Count % 10],
-            TransformationHandler = (sequence, bombInfo) => sequence.Retrograde()
+            TransformationHandler = (sequence, bombInfo) => sequence.Inversion()
         },
         new Decision()
         {
             RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.AltoClef) && indicator.HasSymbol(MusicSymbol.SemiquaverRest) && bombInfo.GetPortPlateCount() >= 2,
             MelodyHandler = (bombInfo) => MelodyDatabase.SerialismMelodies[9 - bombInfo.GetOffIndicators().Count()],
-            TransformationHandler = (sequence, bombInfo) => sequence.Inversion().Retrograde()
+            TransformationHandler = (sequence, bombInfo) => sequence.Retrograde()
         },
         new Decision()
         {
