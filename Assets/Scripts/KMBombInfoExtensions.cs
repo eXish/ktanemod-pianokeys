@@ -197,7 +197,7 @@ public static class KMBombInfoExtensions
 
     public static IEnumerable<char> GetSerialNumberLetters(this KMBombInfo bombInfo)
     {
-        return GetSerialNumber(bombInfo).Where((x) => x < '0' && x > '9');
+        return GetSerialNumber(bombInfo).Where((x) => x < '0' || x > '9');
     }
 
     public static IEnumerable<int> GetSerialNumberNumbers(this KMBombInfo bombInfo)
