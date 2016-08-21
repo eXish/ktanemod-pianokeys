@@ -304,8 +304,13 @@ td, th {
     display: none;
 }*/
 .page-header-section-title {
+    background:#ff1919;
+    color:#ffffff;
     position: relative;
-    height: 0;
+    padding-left:0.5em;
+    padding-right:0.5em;
+    width: auto;    
+    height: auto;
     top: 0;
     float: right;
 }
