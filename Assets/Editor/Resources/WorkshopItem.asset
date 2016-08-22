@@ -22,7 +22,7 @@ MonoBehaviour:
     an added challenge, you can change the likelihood that a piano keys module will
     become cruel by editing the mod settings.\nTo find the settings, go to your steam
     directory, then go to [i]steamapps/workshop/content/341800/720356976[/i] and inside
-    there, there should be a [i]modSettings.json[/b] configuration file. Open that
+    there, there should be a [i]modSettings.json[/i] configuration file. Open that
     up in notepad, and change the \"CruelProbability\" value from 0.0 to a value of
     your choosing from 0.0 to 1.0. 0.0 will mean that you'll never get the cruel variant,
     and 1.0 will mean that you'll always get the cruel variant. 0.5 would offer up
