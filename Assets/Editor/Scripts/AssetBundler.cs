@@ -107,6 +107,9 @@ public class AssetBundler
             //Change all non-Editor scripts to reference ASSEMBLY_NAME instead of Assembly-CSharp
             bundler.AdjustMonoScripts();
 
+            //Update material info components for future compatibility checks
+            bundler.UpdateMaterialInfo();
+
             //Build the assembly using either MSBuild or Unity EditorUtility methods
             if (useMSBuild)
             {
@@ -186,11 +189,11 @@ public class AssetBundler
         }
 
         //modify the csproj (if needed)
-        var csproj = File.ReadAllText("PianoKeys.CSharp.csproj");
+        var csproj = File.ReadAllText("ktanemodkit.CSharp.csproj");
         csproj = csproj.Replace("<AssemblyName>Assembly-CSharp</AssemblyName>", "<AssemblyName>"+ assemblyName + "</AssemblyName>");
         File.WriteAllText("modkithelper.CSharp.csproj", csproj);
 
-        string path = "PianoKeys.CSharp.csproj";
+        string path = "modkithelper.CSharp.csproj";
         System.Diagnostics.Process p = new System.Diagnostics.Process();
         p.StartInfo.FileName = MSBUILD_PATH;
         p.StartInfo.Arguments = path + " /p:Configuration=Release";
@@ -235,7 +238,20 @@ public class AssetBundler
             .Select(path => "Assets/Plugins/Managed/" + Path.GetFileNameWithoutExtension(path))
             .ToList();
 
-        managedReferences.Add("Library/UnityAssemblies/UnityEngine");
+        string unityAssembliesLocation;
+        switch (System.Environment.OSVersion.Platform)
+        {
+            case PlatformID.MacOSX:
+            case PlatformID.Unix:
+                unityAssembliesLocation = EditorApplication.applicationPath.Replace("Unity.app", "Unity.app/Contents/Frameworks/Managed/");
+                break;
+            case PlatformID.Win32NT:
+            default:
+                unityAssembliesLocation = EditorApplication.applicationPath.Replace("Unity.exe", "Data/Managed/");
+                break;
+        }
+
+        managedReferences.Add(unityAssembliesLocation + "UnityEngine");
 
         //Next we need to grab some type references and use reflection to build things the way Unity does.
         //Note that EditorUtility.CompileCSharp will do *almost* exactly the same thing, but it unfortunately
@@ -559,5 +575,38 @@ public class AssetBundler
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Sets material info for gameobjects that have a material to prevent possible future incompatibility
+    /// </summary>
+    protected void UpdateMaterialInfo()
+    {
+        string[] prefabsGUIDs = AssetDatabase.FindAssets("t: prefab");
+        foreach(string prefabGUID in prefabsGUIDs)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(prefabGUID);
+            GameObject go = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if(go == null)
+            {
+                continue;
+            }
+            foreach(Renderer renderer in go.GetComponentsInChildren<Renderer>())
+            {
+                if(renderer.sharedMaterials != null && renderer.sharedMaterials.Length > 0)
+                {
+                    if(renderer.gameObject.GetComponent<KMMaterialInfo>() == null)
+                    {
+                        renderer.gameObject.AddComponent<KMMaterialInfo>();
+                    }
+                    KMMaterialInfo materialInfo = renderer.gameObject.GetComponent<KMMaterialInfo>();
+                    materialInfo.ShaderNames = new List<string>();
+                    foreach(Material material in renderer.sharedMaterials)
+                    {
+                        materialInfo.ShaderNames.Add(material.shader.name);
+                    }
+                }
+            }
+        }
     }
 }
