@@ -13,5 +13,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: PianoKeys
   title: Piano Keys
-  version: v1.2.0
+  version: v1.2.2
   outputFolder: H:/SteamLibrary/steamapps/common/Keep Talking and Nobody Explodes/mods

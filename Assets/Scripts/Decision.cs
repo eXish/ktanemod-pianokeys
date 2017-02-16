@@ -27,6 +27,7 @@ public class Melody
 public delegate bool RuleDelegate(PianoIndicator pianoIndicator, KMBombInfo bombInfo);
 public delegate Melody MelodyDelegate(KMBombInfo bombInfo);
 public delegate IEnumerable<Note> TransformationDelegate(IEnumerable<Note> sourceMelody, KMBombInfo bombInfo);
+public delegate string SequenceStringDelegate(KMBombInfo bombInfo);
 
 public static class NoteExtensions
 {
@@ -86,6 +87,9 @@ public class Decision
     public MelodyDelegate MelodyHandler;
     public RuleDelegate RuleHandler;
     public TransformationDelegate TransformationHandler;
+    public string RequiredSymbolsString;
+    public string FurtherRequirementsString;
+    public SequenceStringDelegate SequenceStringHandler;
 
     public bool IsValidDecision(PianoIndicator pianoIndicator, KMBombInfo bombInfo)
     {

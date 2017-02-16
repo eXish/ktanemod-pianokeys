@@ -1,58 +1,73 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 public class SymbolCharacterAttribute : System.Attribute
 {
-    public SymbolCharacterAttribute(char character)
+    public SymbolCharacterAttribute(char fontCharacter)
     {
-        Character = character;
+        FontCharacter = fontCharacter;
     }
 
-    public readonly char Character;
+    public readonly char FontCharacter;
 }
 
 public enum MusicSymbol
 {
     [SymbolCharacter('n')]
+    [Description("Natural")]
     Natural,
 
     [SymbolCharacter('b')]
+    [Description("Natural")]
     Flat,
 
     [SymbolCharacter('#')]
+    [Description("Sharp")]
     Sharp,
 
     [SymbolCharacter('m')]
+    [Description("Mordent")]
     Mordent,
 
     [SymbolCharacter('T')]
+    [Description("Turn")]
     Turn,
 
     [SymbolCharacter('c')]
+    [Description("Common Time")]
     CommonTime,
 
     [SymbolCharacter('C')]
+    [Description("Cut-common Time")]
     CutCommonTime,
 
     [SymbolCharacter('U')]
+    [Description("Fermata")]
     Fermata,
 
     [SymbolCharacter('B')]
-    AltoClef,
+    [Description("C Clef")]
+    CClef,
 
     [SymbolCharacter('')]
+    [Description("Crotchet Rest")]
     CrotchetRest,
 
     [SymbolCharacter('')]
+    [Description("Down-bow")]
     DownBow,
 
     [SymbolCharacter('')]
-    Breeve,
+    [Description("Breve")]
+    Breve,
 
     [SymbolCharacter('')]
+    [Description("Semiquaver Rest")]
     SemiquaverRest,
 
     [SymbolCharacter('')]
+    [Description("Double Sharp")]
     DoubleSharp
 }
 
@@ -73,22 +88,24 @@ public class PianoIndicator : MonoBehaviour
         MusicSymbol.CommonTime,
         MusicSymbol.CutCommonTime,
         MusicSymbol.Fermata,
-        MusicSymbol.AltoClef
+        MusicSymbol.CClef
     };
     private static readonly MusicSymbol[] CruelSymbolOptions = (MusicSymbol[])System.Enum.GetValues(typeof(MusicSymbol));
 
     public bool HasSymbol(MusicSymbol symbol)
     {
-        char character = symbol.GetAttributeOfType<SymbolCharacterAttribute>().Character;
+        char character = symbol.GetAttributeOfType<SymbolCharacterAttribute>().FontCharacter;
         return IndicatorText.text.IndexOf(character) >= 0;
     }
 
-    public void PickSymbols(bool isCruel)
+    public MusicSymbol[] PickSymbols(bool isCruel)
     {
         List<MusicSymbol> symbols = new List<MusicSymbol>(isCruel ? CruelSymbolOptions : NormalSymbolOptions);
         int symbolCount = isCruel ? CruelSymbolCount : NormalSymbolCount;
 
         IndicatorText.text = "";
+
+        MusicSymbol[] pickedSymbols = new MusicSymbol[symbolCount];
 
         for (int symbolIndex = 0; symbolIndex < symbolCount; ++symbolIndex)
         {
@@ -98,12 +115,16 @@ public class PianoIndicator : MonoBehaviour
 
             if (string.IsNullOrEmpty(IndicatorText.text))
             {
-                IndicatorText.text += symbol.GetAttributeOfType<SymbolCharacterAttribute>().Character;
+                IndicatorText.text += symbol.GetAttributeOfType<SymbolCharacterAttribute>().FontCharacter;
             }
             else
             {
-                IndicatorText.text += "   " + symbol.GetAttributeOfType<SymbolCharacterAttribute>().Character;
+                IndicatorText.text += "   " + symbol.GetAttributeOfType<SymbolCharacterAttribute>().FontCharacter;
             }
-        }        
+
+            pickedSymbols[symbolIndex] = symbol;
+        }
+
+        return pickedSymbols;
     }
 }

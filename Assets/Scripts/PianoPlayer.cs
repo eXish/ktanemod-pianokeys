@@ -1,18 +1,31 @@
-﻿using UnityEngine;
+﻿using System.ComponentModel;
+using UnityEngine;
 
 public enum Semitone
 {
+    [Description("C")]
     C,
+    [Description("C#/Db")]
     CSharp,
+    [Description("D")]
     D,
+    [Description("D#/Eb")]
     DSharp,
+    [Description("E")]
     E,
+    [Description("F")]
     F,
+    [Description("F#/Gb")]
     FSharp,
+    [Description("G")]
     G,
+    [Description("G#/Ab")]
     GSharp,
+    [Description("A")]
     A,
+    [Description("A#/Bb")]
     ASharp,
+    [Description("B")]
     B
 }
 

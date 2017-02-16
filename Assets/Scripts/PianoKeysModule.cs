@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
+using System.Text;
 
 public class PianoKeysModule : MonoBehaviour
 {
@@ -52,13 +53,21 @@ public class PianoKeysModule : MonoBehaviour
             SetupSelectableNote(childSelectable, (Semitone)childIndex);
         }
 
-        _isCruel = GenerateCruelness();
+        _isCruel = GenerateCruelness();        
 
         KMBombModule.ModuleDisplayName = _isCruel ? "Cruel Piano Keys" : "Piano Keys";
         KMBombModule.ModuleType = _isCruel ? "CruelPianoKeys" : "PianoKeys";
 
+        KMBombModule.GenerateLogFriendlyName();        
+
         SetupMaterial();
-        PianoIndicator.PickSymbols(_isCruel);
+        MusicSymbol[] pickedSymbols = PianoIndicator.PickSymbols(_isCruel);
+
+        StringBuilder logString = new StringBuilder();
+        logString.Append("Module generated with the following symbols: ");
+        logString.Append(string.Join(", ", pickedSymbols.Select((x) => x.GetDescription()).ToArray()));
+
+        KMBombModule.Log(logString.ToString());
     }
 
     private void Update()
@@ -66,6 +75,15 @@ public class PianoKeysModule : MonoBehaviour
         if (_correctDecision == null)
         {
             _correctDecision = SelectDecision();
+
+            StringBuilder logString = new StringBuilder();
+            logString.AppendFormat("The correct rule is the following:\n  Symbols: {0}\n  Further Requirements: {1}\n\n", _correctDecision.RequiredSymbolsString, _correctDecision.FurtherRequirementsString);
+            logString.Append("The current valid sequence is the following: ");
+            logString.AppendFormat("[{0}] ", _correctDecision.SequenceStringHandler(KMBombInfo));
+            logString.Append(string.Join(", ", DecisionNotes.Select((x) => x.Semitone.GetDescription()).ToArray()));
+            logString.Append("\n");
+
+            KMBombModule.Log(logString.ToString());
         }
     }
     #endregion
@@ -136,16 +154,29 @@ public class PianoKeysModule : MonoBehaviour
             return;
         }
 
+        StringBuilder logString = new StringBuilder();
+        logString.Append("The current valid sequence is the following: ");
+        logString.AppendFormat("[{0}] ", _correctDecision.SequenceStringHandler(KMBombInfo));
+        logString.Append(string.Join(", ", DecisionNotes.Select((x) => x.Semitone.GetDescription()).ToArray()));
+        KMBombModule.Log(logString.ToString());
+        KMBombModule.LogFormat("Input {0} was received; valid input at this stage is {1}", semitone.GetDescription(), CurrentSemitone.GetDescription());
+
         if (IsCorrectSemitone(semitone))
         {
             AdvanceCurrentNote();
             if (IsMelodyComplete)
             {
+                KMBombModule.Log("Input was valid and sequence complete; module defused!");
                 KMBombModule.HandlePass();
+            }
+            else
+            {
+                KMBombModule.Log("Input was valid; continuing the sequence...");
             }
         }
         else
         {
+            KMBombModule.Log("Input was invalid; module caused a strike and reset!");
             ResetCurrentNote();
             KMBombModule.HandleStrike();
         }

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 
 public static class EnumExtensions
 {
@@ -8,5 +9,10 @@ public static class EnumExtensions
         var memInfo = type.GetMember(enumVal.ToString());
         var attributes = memInfo[0].GetCustomAttributes(typeof(T), false);
         return (attributes.Length > 0) ? (T)attributes[0] : null;
+    }
+
+    public static string GetDescription(this Enum enumVal)
+    {
+        return enumVal.GetAttributeOfType<DescriptionAttribute>().Description;
     }
 }
