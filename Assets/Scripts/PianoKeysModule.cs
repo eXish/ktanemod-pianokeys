@@ -240,4 +240,83 @@ public class PianoKeysModule : MonoBehaviour
         }
     }
     #endregion
+
+    #region Twitch Plays
+    public KMSelectable[] ProcessTwitchCommand(string command)
+    {
+        if (!command.StartsWith("press ", StringComparison.InvariantCultureIgnoreCase))
+        {
+            return null;
+        }
+
+        command = command.Substring(5);
+
+        string[] sequence = command.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+        List<KMSelectable> selectables = new List<KMSelectable>();
+
+        foreach (string buttonString in sequence)
+        {
+            switch (buttonString.ToLowerInvariant())
+            {
+                case "c":
+                    selectables.Add(KMSelectable.Children[0]);
+                    break;
+                case "c#":
+                case "c♯":
+                case "db":
+                case "d♭":
+                    selectables.Add(KMSelectable.Children[1]);
+                    break;
+                case "d":
+                    selectables.Add(KMSelectable.Children[2]);
+                    break;
+                case "d#":
+                case "d♯":
+                case "eb":
+                case "e♭":
+                    selectables.Add(KMSelectable.Children[3]);
+                    break;
+                case "e":
+                    selectables.Add(KMSelectable.Children[4]);
+                    break;
+                case "f":
+                    selectables.Add(KMSelectable.Children[5]);
+                    break;
+                case "f#":
+                case "f♯":
+                case "gb":
+                case "g♭":
+                    selectables.Add(KMSelectable.Children[6]);
+                    break;
+                case "g":
+                    selectables.Add(KMSelectable.Children[7]);
+                    break;
+                case "g#":
+                case "g♯":
+                case "ab":
+                case "a♭":
+                    selectables.Add(KMSelectable.Children[8]);
+                    break;
+                case "a":
+                    selectables.Add(KMSelectable.Children[9]);
+                    break;
+                case "a#":
+                case "a♯":
+                case "bb":
+                case "b♭":
+                    selectables.Add(KMSelectable.Children[10]);
+                    break;
+                case "b":
+                    selectables.Add(KMSelectable.Children[11]);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        return selectables.ToArray();
+    }
+    #endregion
 }
