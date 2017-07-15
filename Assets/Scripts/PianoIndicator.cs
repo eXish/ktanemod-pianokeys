@@ -19,7 +19,7 @@ public enum MusicSymbol
     Natural,
 
     [SymbolCharacter('b')]
-    [Description("Natural")]
+    [Description("Flat")]
     Flat,
 
     [SymbolCharacter('#')]
