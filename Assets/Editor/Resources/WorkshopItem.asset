@@ -16,22 +16,16 @@ MonoBehaviour:
   Description: "[b][i]What do you get when you drop a piano down a mine shaft? A flat
     minor.[/i][/b]\r\n\r\n[h1]About[/h1]\r\nThie module employs the use of a standard
     12-tone piano keyboard and identification of symbols from common western music
-    notation as its main gimmick.\r\n\r\n[h1]Cruel Variant[/h1]\r\nThis module now
-    comes with a cruel variant! By default, you'll never get a cruel version of the
-    module, so that the behavior remains the same as before. However, if you feel
-    you want an added challenge, you can change the likelihood that a piano keys module
-    will become cruel by editing the mod settings.\r\nTo find the settings, go to
-    your steam directory, then go to [i]steamapps/workshop/content/341800/720356976[/i]
-    and inside there, there should be a [i]modSettings.json[/i] configuration file.
-    Open that up in notepad, and change the \"CruelProbability\" value from 0.0 to
-    a value of your choosing from 0.0 to 1.0. 0.0 will mean that you'll never get
-    the cruel variant, and 1.0 will mean that you'll always get the cruel variant.
-    0.5 would offer up the cruel variant roughly 50% of the time.\r\n\r\n[h1]Manual
-    Page[/h1]\r\nThe manual PDFs are included in the download. However, you can also
-    go to the following links to view the manuals:\r\n[url=https://ashbash1987.github.io/ktanemod-pianokeys/Manual/]Normal
+    notation as its main gimmick.\r\n\r\n[h1]Cruel Variant[/h1]\r\nThis module comes
+    with a cruel variant! If you remember the mod settings file, that is now no longer
+    in use. Instead, Cruel Piano Keys is a bona fide separate module, that can [b]only[/b]
+    be manipulated by the Mod Selector.\n\r\n[h1]Manual Page[/h1]\r\nThe manual PDFs
+    are included in the download. However, you can also go to the following links
+    to view the manuals:\r\n[url=https://ashbash1987.github.io/ktanemod-pianokeys/Manual/]Normal
     Piano Keys[/url]\r\n\r\n[url=https://ashbash1987.github.io/ktanemod-pianokeys/CruelManual/]Cruel
     Piano Keys[/url]\r\n\r\n[h1]Mission Makers[/h1]\r\nFor those making custom missions
-    and wanting to reference this module, the type name is [b][i]PianoKeys[/i][/b]."
+    and wanting to reference this module, the type names are [b][i]PianoKeys[/i][/b]
+    and [b][i]CruelPianoKeys[/i][/b]."
   PreviewImage: {fileID: 2800000, guid: cc8ba585a4dc2d640a9f7075d863bf82, type: 3}
   Tags:
   - Module

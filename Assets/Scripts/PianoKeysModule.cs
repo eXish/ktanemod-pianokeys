@@ -17,10 +17,10 @@ public class PianoKeysModule : MonoBehaviour
     public KMBombModule KMBombModule;
     public KMBombInfo KMBombInfo;
     public KMSelectable KMSelectable;
-    public KMModSettings KMModSettings;
     public MeshRenderer ComponentMesh;
     public PianoPlayer PianoPlayer;
     public PianoIndicator PianoIndicator;
+    public bool IsCruel;
     #endregion
 
     #region Private Properties
@@ -41,7 +41,6 @@ public class PianoKeysModule : MonoBehaviour
     #region Private Fields
     private Decision _correctDecision = null;
     private int _currentNoteIndex = 0;
-    private bool _isCruel = false;
     #endregion
 
     #region Unity Lifetime
@@ -53,15 +52,10 @@ public class PianoKeysModule : MonoBehaviour
             SetupSelectableNote(childSelectable, (Semitone)childIndex);
         }
 
-        _isCruel = GenerateCruelness();        
-
-        KMBombModule.ModuleDisplayName = _isCruel ? "Cruel Piano Keys" : "Piano Keys";
-        KMBombModule.ModuleType = _isCruel ? "CruelPianoKeys" : "PianoKeys";
-
-        KMBombModule.GenerateLogFriendlyName();        
+        KMBombModule.GenerateLogFriendlyName();
 
         SetupMaterial();
-        MusicSymbol[] pickedSymbols = PianoIndicator.PickSymbols(_isCruel);
+        MusicSymbol[] pickedSymbols = PianoIndicator.PickSymbols(IsCruel);
 
         StringBuilder logString = new StringBuilder();
         logString.Append("Module generated with the following symbols: ");
@@ -88,26 +82,6 @@ public class PianoKeysModule : MonoBehaviour
     }
     #endregion
 
-    #region Cruel Decider
-    private bool GenerateCruelness()
-    {
-        try
-        {
-            PianoKeysModSettings modSettings = JsonConvert.DeserializeObject<PianoKeysModSettings>(KMModSettings.Settings);
-            if (modSettings != null)
-            {
-                return UnityEngine.Random.Range(0.0001f, 1.0f) <= modSettings.CruelProbability;
-            }
-
-            return false;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
-    #endregion
-
     #region Note Hooks
     private void SetupSelectableNote(KMSelectable selectable, Semitone semitone)
     {
@@ -123,7 +97,7 @@ public class PianoKeysModule : MonoBehaviour
     private void SetupMaterial()
     {
         Material newMaterial = new Material(ComponentMesh.material);
-        newMaterial.color = _isCruel ? CruelColour : NormalColour;
+        newMaterial.color = IsCruel ? CruelColour : NormalColour;
         ComponentMesh.material = newMaterial;
     }
     #endregion
@@ -131,7 +105,7 @@ public class PianoKeysModule : MonoBehaviour
     #region Decision Selection
     private Decision SelectDecision()
     {
-        if (_isCruel)
+        if (IsCruel)
         {
             Decision decision = DecisionDatabase.CruelDecisions.FirstOrDefault((x) => x.IsValidDecision(PianoIndicator, KMBombInfo));
             if (decision != null)

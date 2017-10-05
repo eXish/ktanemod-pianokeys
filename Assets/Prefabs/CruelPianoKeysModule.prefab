@@ -442,7 +442,7 @@ GameObject:
   - 114: {fileID: 11440370}
   - 114: {fileID: 11494276}
   m_Layer: 0
-  m_Name: PianoKeysModule
+  m_Name: CruelPianoKeysModule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2819,7 +2819,7 @@ MonoBehaviour:
   ComponentMesh: {fileID: 2349418}
   PianoPlayer: {fileID: 11440370}
   PianoIndicator: {fileID: 11491664}
-  IsCruel: 0
+  IsCruel: 1
 --- !u!114 &11488878
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2844,9 +2844,9 @@ MonoBehaviour:
   m_Script: {fileID: -119419473, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ModuleType: PianoKeys
-  ModuleDisplayName: Piano Keys
-  RequiresTimerVisibility: 0
+  ModuleType: CruelPianoKeys
+  ModuleDisplayName: Cruel Piano Keys
+  RequiresTimerVisibility: 1
 --- !u!114 &11490600
 MonoBehaviour:
   m_ObjectHideFlags: 1
