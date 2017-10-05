@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
@@ -216,73 +217,73 @@ public class PianoKeysModule : MonoBehaviour
     #endregion
 
     #region Twitch Plays
-    public KMSelectable[] ProcessTwitchCommand(string command)
+    public IEnumerator ProcessTwitchCommand(string command)
     {
         if (!command.StartsWith("press ", StringComparison.InvariantCultureIgnoreCase))
         {
-            return null;
+            yield break;
         }
 
         command = command.Substring(5);
 
         string[] sequence = command.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-        List<KMSelectable> selectables = new List<KMSelectable>();
+        List<Semitone> toPress = new List<Semitone>();
 
         foreach (string buttonString in sequence)
         {
             switch (buttonString.ToLowerInvariant())
             {
                 case "c":
-                    selectables.Add(KMSelectable.Children[0]);
+                    toPress.Add(Semitone.C);
                     break;
                 case "c#":
                 case "c♯":
                 case "db":
                 case "d♭":
-                    selectables.Add(KMSelectable.Children[1]);
+                    toPress.Add(Semitone.CSharp);
                     break;
                 case "d":
-                    selectables.Add(KMSelectable.Children[2]);
+                    toPress.Add(Semitone.D);
                     break;
                 case "d#":
                 case "d♯":
                 case "eb":
                 case "e♭":
-                    selectables.Add(KMSelectable.Children[3]);
+                    toPress.Add(Semitone.DSharp);
                     break;
                 case "e":
-                    selectables.Add(KMSelectable.Children[4]);
+                    toPress.Add(Semitone.E);
                     break;
                 case "f":
-                    selectables.Add(KMSelectable.Children[5]);
+                    toPress.Add(Semitone.F);
                     break;
                 case "f#":
                 case "f♯":
                 case "gb":
                 case "g♭":
-                    selectables.Add(KMSelectable.Children[6]);
+                    toPress.Add(Semitone.FSharp);
                     break;
                 case "g":
-                    selectables.Add(KMSelectable.Children[7]);
+                    toPress.Add(Semitone.G);
                     break;
                 case "g#":
                 case "g♯":
                 case "ab":
                 case "a♭":
-                    selectables.Add(KMSelectable.Children[8]);
+                    toPress.Add(Semitone.GSharp);
                     break;
                 case "a":
-                    selectables.Add(KMSelectable.Children[9]);
+                    toPress.Add(Semitone.A);
                     break;
                 case "a#":
                 case "a♯":
                 case "bb":
                 case "b♭":
-                    selectables.Add(KMSelectable.Children[10]);
+                    toPress.Add(Semitone.ASharp);
                     break;
                 case "b":
-                    selectables.Add(KMSelectable.Children[11]);
+                    toPress.Add(Semitone.B);
                     break;
 
                 default:
@@ -290,7 +291,41 @@ public class PianoKeysModule : MonoBehaviour
             }
         }
 
-        return selectables.ToArray();
+        float tempoMultiplier = 1.45f; // To make up for yield-related slowness, and speed it up a little in general
+        int tempo;
+
+        // Attempt to find a matching melody in the database
+        Semitone[] inputSemitones = toPress.ToArray();
+        foreach (Decision decision in DecisionDatabase.NormalDecisions)
+        {
+            IEnumerable<Note> notes = decision.GetNotes(KMBombInfo);
+            Semitone[] melodySemitones = notes.Select((x) => x.Semitone).ToArray();
+            if (inputSemitones.SequenceEqual(melodySemitones))
+            {
+                tempo = decision.MelodyHandler(KMBombInfo).Tempo;
+                KMBombModule.Log("Input matches " + decision.SequenceStringHandler(KMBombInfo) + "; inputting melody");
+                foreach (Note note in notes)
+                {
+                    float duration = note.Duration / tempo * 240 / tempoMultiplier;
+                    yield return KMSelectable.Children[(int)note.Semitone];
+                    yield return new WaitForSeconds(duration);
+                    yield return KMSelectable.Children[(int)note.Semitone];
+                }
+                yield break;
+            }
+        }
+
+        // No matching melody found
+        KMBombModule.Log("Input does not match a known melody; producing a random tempo and rhythm");
+        System.Random rng = new System.Random();
+        tempo = rng.Next(100, 150);
+        foreach (Semitone key in toPress)
+        {
+            float duration = 1.0f / (float)Math.Pow(2, rng.Next(2, 4)) / tempo * 240 / tempoMultiplier;
+            yield return KMSelectable.Children[ (int)key ];
+            yield return new WaitForSeconds(duration);
+            yield return KMSelectable.Children[ (int)key ];
+        }
     }
     #endregion
 }

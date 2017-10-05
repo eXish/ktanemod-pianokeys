@@ -3,20 +3,23 @@ using System.Collections.Generic;
 
 public class Note
 {
-    public Note(Semitone semitone, int octave)
+    public Note(Semitone semitone, int octave, float duration = 0.125f)
     {
         Semitone = semitone;
         Octave = octave;
+        Duration = duration;
     }
 
     public Semitone Semitone;
     public int Octave;
+    public float Duration;
 }
 
 public class Melody
 {
     public string Name;
     public Note[] Notes;
+    public int Tempo = 130;
 
     public override string ToString()
     {
