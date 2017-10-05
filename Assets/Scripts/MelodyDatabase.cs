@@ -1,11 +1,11 @@
 ﻿public static class MelodyDatabase
 {
     #region Note Lengths
-    private static float Minim = 0.5f;
-    private static float Crotchet = 0.25f;
-    private static float Quaver = 0.125f;
-    private static float Semiquaver = 0.0625f;
-    private static float Triplet = Crotchet / 3;
+    private const float Minim = 0.5f;
+    private const float Crotchet = 0.25f;
+    private const float Quaver = 0.125f;
+    private const float Semiquaver = 0.0625f;
+    private const float Triplet = Crotchet / 3.0f;
     #endregion
 
     #region Regular Melodies
