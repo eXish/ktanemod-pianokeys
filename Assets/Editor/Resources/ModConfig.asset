@@ -13,5 +13,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: PianoKeys
   title: Piano Keys
+  description: "[b][i]What do you get when you drop a piano down a mine shaft? A flat
+    minor.[/i][/b]\r\n\r\n[h1]About[/h1]\r\nThis module employs the use of a standard
+    12-tone piano keyboard and identification of symbols from common western music
+    notation as its main gimmick.\r\n\r\n[h1]Cruel Variant[/h1]\r\nThis module comes
+    with a cruel variant! If you remember the mod settings file, that is now no longer
+    in use. Instead, Cruel Piano Keys is a bona fide separate module, that can [b]only[/b]
+    be manipulated by the Mod Selector.\r\n\r\n[h1]Manual Page[/h1]\r\nThe manual
+    PDFs are included in the download. However, you can also go to the following links
+    to view the manuals:\r\n[url=https://ashbash1987.github.io/ktanemod-pianokeys/Manual/]Normal
+    Piano Keys[/url]\r\n\r\n[url=https://ashbash1987.github.io/ktanemod-pianokeys/CruelManual/]Cruel
+    Piano Keys[/url]\r\n\r\n[h1]Mission Makers[/h1]\r\nFor those making custom missions
+    and wanting to reference this module, the type names are [b][i]PianoKeys[/i][/b]
+    and [b][i]CruelPianoKeys[/i][/b]."
   version: v1.5.0
   outputFolder: E:\Games\SteamLibrary\steamapps\common\Keep Talking and Nobody Explodes\mods
+  previewImage: {fileID: 2800000, guid: cc8ba585a4dc2d640a9f7075d863bf82, type: 3}
