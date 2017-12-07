@@ -3,15 +3,21 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Newtonsoft.Json;
 using System.Text;
 
 public class PianoKeysModule : MonoBehaviour
 {
+    #region Types
+    public enum Type
+    {
+        Normal,
+        Cruel,
+        Festive
+    }
+    #endregion
+
     #region Constants
     private const int DefaultOctave = 3;
-    private static readonly Color NormalColour = new Color(1.0f, 1.0f, 1.0f);
-    private static readonly Color CruelColour = new Color(1.0f, 0.1f, 0.1f);
     #endregion
 
     #region Public Fields
@@ -21,7 +27,7 @@ public class PianoKeysModule : MonoBehaviour
     public MeshRenderer ComponentMesh;
     public PianoPlayer PianoPlayer;
     public PianoIndicator PianoIndicator;
-    public bool IsCruel;
+    public Type ModuleType;
     #endregion
 
     #region Private Properties
@@ -55,8 +61,7 @@ public class PianoKeysModule : MonoBehaviour
 
         KMBombModule.GenerateLogFriendlyName();
 
-        SetupMaterial();
-        MusicSymbol[] pickedSymbols = PianoIndicator.PickSymbols(IsCruel);
+        MusicSymbol[] pickedSymbols = PianoIndicator.PickSymbols(ModuleType);
 
         StringBuilder logString = new StringBuilder();
         logString.Append("Module generated with the following symbols: ");
@@ -94,25 +99,27 @@ public class PianoKeysModule : MonoBehaviour
     }
     #endregion
 
-    #region Material Setup
-    private void SetupMaterial()
-    {
-        Material newMaterial = new Material(ComponentMesh.material);
-        newMaterial.color = IsCruel ? CruelColour : NormalColour;
-        ComponentMesh.material = newMaterial;
-    }
-    #endregion
-
     #region Decision Selection
     private Decision SelectDecision()
     {
-        if (IsCruel)
+        switch (ModuleType)
         {
-            Decision decision = DecisionDatabase.CruelDecisions.FirstOrDefault((x) => x.IsValidDecision(PianoIndicator, KMBombInfo));
-            if (decision != null)
-            {
-                return decision;
-            }
+            case Type.Cruel:
+                Decision decision = DecisionDatabase.CruelDecisions.FirstOrDefault((x) => x.IsValidDecision(PianoIndicator, KMBombInfo));
+                if (decision != null)
+                {
+                    return decision;
+                }
+
+                //Need to break to fall-through to 'normal' decisions
+                break;
+
+            case Type.Festive:
+                //Festive doesn't fall-through  to 'normal' decisions
+                return DecisionDatabase.FestiveDecisions.FirstOrDefault((x) => x.IsValidDecision(PianoIndicator, KMBombInfo));
+
+            default:
+                break;
         }
 
         return DecisionDatabase.NormalDecisions.FirstOrDefault((x) => x.IsValidDecision(PianoIndicator, KMBombInfo));

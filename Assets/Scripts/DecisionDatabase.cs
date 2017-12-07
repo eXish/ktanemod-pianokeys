@@ -190,4 +190,107 @@ public static class DecisionDatabase
             SequenceStringHandler = (bombInfo) => "P of #5"
         }
     };
+
+    public static readonly Decision[] FestiveDecisions =
+    {
+        new Decision()
+        {
+            RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.Caesura) && bombInfo.GetSerialNumberNumbers().Where((x) => x % 2 == 0).Count() > bombInfo.GetSerialNumberNumbers().Where((x) => x % 2 != 0).Count(),
+            MelodyHandler = (bombInfo) => MelodyDatabase.Rudolph,
+            TransformationHandler = (sequence, bombInfo) => sequence,
+            RequiredSymbolsString =  MusicSymbol.Caesura.GetDescription(),
+            FurtherRequirementsString = "More even digits in the serial number than odd",
+            SequenceStringHandler = (bombInfo) => "'Rudolph The Red-Nosed Reindeer'",
+        },
+
+        new Decision()
+        {
+            RuleHandler = (indicator, bombInfo) => (indicator.HasSymbol(MusicSymbol.DalSegno) || indicator.HasSymbol(MusicSymbol.SemiquaverNote)) && bombInfo.GetSerialNumberLetters().GroupBy((x) => x).Any((y) => y.Count() >= 2),
+            MelodyHandler = (bombInfo) => MelodyDatabase.WeThreeKings,
+            TransformationHandler = (sequence, bombInfo) => sequence,
+            RequiredSymbolsString =  string.Format("{0} or {1}", MusicSymbol.DalSegno.GetDescription(), MusicSymbol.SemiquaverNote.GetDescription()),
+            FurtherRequirementsString = "Any duplicate characters or digits in serial number",
+            SequenceStringHandler = (bombInfo) => "'We Three Kings Of Orient Are'",
+        },
+
+        new Decision()
+        {
+            RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.Mordent) && indicator.HasSymbol(MusicSymbol.PedalUp),
+            MelodyHandler = (bombInfo) => MelodyDatabase.SilentNight,
+            TransformationHandler = (sequence, bombInfo) => sequence,
+            RequiredSymbolsString =  string.Format("{0} and {1}", MusicSymbol.Mordent.GetDescription(), MusicSymbol.PedalUp.GetDescription()),
+            FurtherRequirementsString = "(No other requirements)",
+            SequenceStringHandler = (bombInfo) => "'Silent Night'",
+        },
+
+        new Decision()
+        {
+            RuleHandler = (indicator, bombInfo) => (indicator.HasSymbol(MusicSymbol.UpBow) || indicator.HasSymbol(MusicSymbol.DownBow)) && bombInfo.GetPorts().GroupBy((x) => x).Count() <= 2,
+            MelodyHandler = (bombInfo) => MelodyDatabase.LastChristmas,
+            TransformationHandler = (sequence, bombInfo) => sequence,
+            RequiredSymbolsString =  string.Format("{0} or {1}", MusicSymbol.UpBow.GetDescription(), MusicSymbol.DownBow.GetDescription()),
+            FurtherRequirementsString = "At most 2 types of port",
+            SequenceStringHandler = (bombInfo) => "'Last Christmas'",
+        },
+
+        new Decision()
+        {
+            RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.Marcato) && bombInfo.GetOnIndicators().Any((x) => x.HasVowel()),
+            MelodyHandler = (bombInfo) => MelodyDatabase.AllIWantForChristmas,
+            TransformationHandler = (sequence, bombInfo) => sequence,
+            RequiredSymbolsString = MusicSymbol.Marcato.GetDescription(),
+            FurtherRequirementsString = "Lit indicator with vowel",
+            SequenceStringHandler = (bombInfo) => "'All I Want For Christmas Is You'",
+        },
+
+        new Decision()
+        {
+            RuleHandler = (indicator, bombInfo) => (indicator.HasSymbol(MusicSymbol.SemiquaverRest) || indicator.HasSymbol(MusicSymbol.SemiquaverNote)) && bombInfo.GetBatteryCount(KMBombInfoExtensions.KnownBatteryType.AAx2) + bombInfo.GetBatteryCount(KMBombInfoExtensions.KnownBatteryType.AAx3) + bombInfo.GetBatteryCount(KMBombInfoExtensions.KnownBatteryType.AAx4) >= 3,
+            MelodyHandler = (bombInfo) => MelodyDatabase.MostWonderfulTime,
+            TransformationHandler = (sequence, bombInfo) => sequence,
+            RequiredSymbolsString = string.Format("{0} or {1}", MusicSymbol.SemiquaverRest.GetDescription(), MusicSymbol.SemiquaverNote.GetDescription()),
+            FurtherRequirementsString = "3 or more AA batteries",
+            SequenceStringHandler = (bombInfo) => "'Most Wonderful Time of The Year'",
+        },
+
+        new Decision()
+        {
+            RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.SemibreveNote) && indicator.HasSymbol(MusicSymbol.Breve),
+            MelodyHandler = (bombInfo) => MelodyDatabase.FrostyTheSnowman,
+            TransformationHandler = (sequence, bombInfo) => sequence,
+            RequiredSymbolsString = string.Format("{0} and {1}", MusicSymbol.SemibreveNote.GetDescription(), MusicSymbol.Breve.GetDescription()),
+            FurtherRequirementsString = "(No other requirements)",
+            SequenceStringHandler = (bombInfo) => "'Frosty The Snowman'",
+        },
+
+        new Decision()
+        {
+            RuleHandler = (indicator, bombInfo) => (indicator.HasSymbol(MusicSymbol.Accent) || indicator.HasSymbol(MusicSymbol.Marcato) || indicator.HasSymbol(MusicSymbol.UpBow)) && bombInfo.GetSerialNumberNumbers().Any((x) => x == 1 || x == 9),
+            MelodyHandler = (bombInfo) => MelodyDatabase.JingleBells,
+            TransformationHandler = (sequence, bombInfo) => sequence,
+            RequiredSymbolsString = string.Format("{0} or {1} or {2}", MusicSymbol.Accent.GetDescription(), MusicSymbol.Marcato.GetDescription(), MusicSymbol.UpBow.GetDescription()),
+            FurtherRequirementsString = "Serial number contains 1 or 9",
+            SequenceStringHandler = (bombInfo) => "'Jingle Bells'",
+        },
+
+        new Decision()
+        {
+            RuleHandler = (indicator, bombInfo) => indicator.HasSymbol(MusicSymbol.DalSegno) || indicator.HasSymbol(MusicSymbol.CClef) || indicator.HasSymbol(MusicSymbol.Caesura),
+            MelodyHandler = (bombInfo) => MelodyDatabase.JingleBellRock,
+            TransformationHandler = (sequence, bombInfo) => sequence,
+            RequiredSymbolsString = string.Format("{0} or {1} or {2}", MusicSymbol.DalSegno.GetDescription(), MusicSymbol.CClef.GetDescription(), MusicSymbol.Caesura.GetDescription()),
+            FurtherRequirementsString = "(No other requirements)",
+            SequenceStringHandler = (bombInfo) => "'Jingle Bell Rock'",
+        },
+
+        new Decision()
+        {
+            RuleHandler = (indicator, bombInfo) => true,
+            MelodyHandler = (bombInfo) => MelodyDatabase.GenerateCarolOfTheBells(bombInfo.GetSerialNumberNumbers().Max() + 1),
+            TransformationHandler = (sequence, bombInfo) => sequence,
+            RequiredSymbolsString = "(No requirement)",
+            FurtherRequirementsString = "(No other requirements)",
+            SequenceStringHandler = (bombInfo) => string.Format("'Carol of The Bells' x{0}", bombInfo.GetSerialNumberNumbers().Max() + 1),
+        },
+    };
 }

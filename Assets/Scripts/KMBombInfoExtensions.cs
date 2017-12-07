@@ -41,8 +41,10 @@ public static class KMBombInfoExtensions
     public enum KnownBatteryType
     {
         Unknown = 0,
-        D = 1,          //D batteries currently always come as 1 battery in the one battery holder
-        AA = 2,         //AA batteries currently always comes in 2 batteries in the one battery holder
+        D = 1,      //D batteries currently always come as 1 battery in the one battery holder
+        AAx2 = 2,
+        AAx3 = 3,
+        AAx4 = 4
     }
 
     public enum KnownPortType
