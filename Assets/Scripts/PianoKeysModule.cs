@@ -301,9 +301,29 @@ public class PianoKeysModule : MonoBehaviour
         float tempoMultiplier = 1.45f; // To make up for yield-related slowness, and speed it up a little in general
         int tempo;
 
-        // Attempt to find a matching melody in the database
+        // Attempt to find a matching melody in the normal database
         Semitone[] inputSemitones = toPress.ToArray();
         foreach (Decision decision in DecisionDatabase.NormalDecisions)
+        {
+            IEnumerable<Note> notes = decision.GetNotes(KMBombInfo);
+            Semitone[] melodySemitones = notes.Select((x) => x.Semitone).ToArray();
+            if (inputSemitones.SequenceEqual(melodySemitones))
+            {
+                tempo = decision.MelodyHandler(KMBombInfo).Tempo;
+                KMBombModule.Log("Input matches " + decision.SequenceStringHandler(KMBombInfo) + "; inputting melody");
+                foreach (Note note in notes)
+                {
+                    float duration = note.Duration / tempo * 240 / tempoMultiplier;
+                    yield return KMSelectable.Children[(int)note.Semitone];
+                    yield return new WaitForSeconds(duration);
+                    yield return KMSelectable.Children[(int)note.Semitone];
+                }
+                yield break;
+            }
+        }
+
+        // Attempt to find a matching melody in the festive database
+        foreach (Decision decision in DecisionDatabase.FestiveDecisions)
         {
             IEnumerable<Note> notes = decision.GetNotes(KMBombInfo);
             Semitone[] melodySemitones = notes.Select((x) => x.Semitone).ToArray();
