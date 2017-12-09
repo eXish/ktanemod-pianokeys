@@ -205,7 +205,7 @@ public static class DecisionDatabase
 
         new Decision()
         {
-            RuleHandler = (indicator, bombInfo) => (indicator.HasSymbol(MusicSymbol.DalSegno) || indicator.HasSymbol(MusicSymbol.SemiquaverNote)) && bombInfo.GetSerialNumberLetters().GroupBy((x) => x).Any((y) => y.Count() >= 2),
+            RuleHandler = (indicator, bombInfo) => (indicator.HasSymbol(MusicSymbol.DalSegno) || indicator.HasSymbol(MusicSymbol.SemiquaverNote)) && (bombInfo.GetSerialNumberLetters().GroupBy((x) => x).Any((y) => y.Count() >= 2) || bombInfo.GetSerialNumberNumbers().GroupBy((x) => x).Any((y) => y.Count() >= 2)),
             MelodyHandler = (bombInfo) => MelodyDatabase.WeThreeKings,
             TransformationHandler = (sequence, bombInfo) => sequence,
             RequiredSymbolsString =  string.Format("{0} or {1}", MusicSymbol.DalSegno.GetDescription(), MusicSymbol.SemiquaverNote.GetDescription()),
