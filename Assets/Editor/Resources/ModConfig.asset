@@ -27,8 +27,8 @@ MonoBehaviour:
     Piano Keys[/url]\r\n\r\n[url=https://ashbash1987.github.io/ktanemod-pianokeys/CruelManual/]Cruel
     Piano Keys[/url]\r\n\r\n[url=https://ashbash1987.github.io/ktanemod-pianokeys/FestiveManual/]Festive
     Piano Keys[/url]\r\n\r\n[h1]Mission Makers[/h1]\r\nFor those making custom missions
-    and wanting to reference this module, the type names are [b][i]PianoKeys[/i][/b]
-    and [b][i]CruelPianoKeys[/i][/b]."
-  version: v1.6.2
+    and wanting to reference this module, the type names are [b][i]PianoKeys[/i][/b],
+    \ [b][i]CruelPianoKeys[/i][/b], and [b][i]FestivePianoKeys[/i][/b]."
+  version: v1.6.3
   outputFolder: E:\Games\SteamLibrary\steamapps\common\Keep Talking and Nobody Explodes\mods
   previewImage: {fileID: 2800000, guid: cc8ba585a4dc2d640a9f7075d863bf82, type: 3}

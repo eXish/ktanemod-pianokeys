@@ -226,12 +226,18 @@ public class PianoKeysModule : MonoBehaviour
     #region Twitch Plays
     public IEnumerator ProcessTwitchCommand(string command)
     {
-        if (!command.StartsWith("press ", StringComparison.InvariantCultureIgnoreCase))
+        if (command.StartsWith("press ", StringComparison.InvariantCultureIgnoreCase))
         {
+            command = command.Substring(5);
+        }
+        else if (command.StartsWith("play ", StringComparison.InvariantCultureIgnoreCase))
+        {
+            command = command.Substring(4);
+        }
+        else
+        { 
             yield break;
         }
-
-        command = command.Substring(5);
 
         string[] sequence = command.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -241,6 +247,8 @@ public class PianoKeysModule : MonoBehaviour
         {
             switch (buttonString.ToLowerInvariant())
             {
+                case "b#":
+                case "b♯":
                 case "c":
                     toPress.Add(Semitone.C);
                     break;
@@ -260,8 +268,12 @@ public class PianoKeysModule : MonoBehaviour
                     toPress.Add(Semitone.DSharp);
                     break;
                 case "e":
+                case "fb":
+                case "f♭":
                     toPress.Add(Semitone.E);
                     break;
+                case "e#":
+                case "e♯":
                 case "f":
                     toPress.Add(Semitone.F);
                     break;
@@ -290,11 +302,13 @@ public class PianoKeysModule : MonoBehaviour
                     toPress.Add(Semitone.ASharp);
                     break;
                 case "b":
+                case "cb":
+                case "c♭":
                     toPress.Add(Semitone.B);
                     break;
 
                 default:
-                    break;
+                    yield break;
             }
         }
 
