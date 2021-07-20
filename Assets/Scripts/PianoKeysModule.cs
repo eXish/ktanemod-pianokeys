@@ -368,5 +368,43 @@ public class PianoKeysModule : MonoBehaviour
             yield return KMSelectable.Children[ (int)key ];
         }
     }
+
+    public IEnumerator TwitchHandleForcedSolve()
+    {
+        recalc:
+        IEnumerable<Note> notes = _correctDecision.GetNotes(KMBombInfo);
+        Semitone[] melodySemitones = notes.Select((x) => x.Semitone).ToArray();
+        float tempoMultiplier = 1.45f;
+        int tempo = _correctDecision.MelodyHandler(KMBombInfo).Tempo;
+        System.Random rng = null;
+        if (DecisionDatabase.CruelDecisions.Contains(_correctDecision))
+        {
+            rng = new System.Random();
+            tempo = rng.Next(100, 150);
+        }
+        int pressCt = 0;
+        foreach (Note note in notes)
+        {
+            if (pressCt == _currentNoteIndex)
+            {
+                float duration;
+                if (rng != null)
+                    duration = 1.0f / (float)Math.Pow(2, rng.Next(2, 4)) / tempo * 240 / tempoMultiplier;
+                else
+                    duration = note.Duration / tempo * 240 / tempoMultiplier;
+                KMSelectable.Children[(int)note.Semitone].OnInteract();
+                if (pressCt != notes.Count() - 1)
+                {
+                    yield return new WaitForSeconds(duration);
+                    // Check for change in correct notes due to either time, solves, or strikes
+                    if (notes != _correctDecision.GetNotes(KMBombInfo))
+                        goto recalc;
+                }
+                else
+                    yield return new WaitForSeconds(.1f);
+            }
+            pressCt++;
+        }
+    }
     #endregion
 }

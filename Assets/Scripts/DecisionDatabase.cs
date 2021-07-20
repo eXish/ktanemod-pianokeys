@@ -42,7 +42,7 @@ public static class DecisionDatabase
             TransformationHandler = (sequence, bombInfo) => sequence,
             RequiredSymbolsString = string.Format("{0} and {1}", MusicSymbol.CutCommonTime.GetDescription(), MusicSymbol.Turn.GetDescription()),
             FurtherRequirementsString = "RCA port is present",
-            SequenceStringHandler = (bombInfo) => "'Jurrasic Park'",
+            SequenceStringHandler = (bombInfo) => "'Jurassic Park'",
         },
 
         new Decision()
